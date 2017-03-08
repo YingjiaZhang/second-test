@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="school.thoughtworks.pos.mapper.CartMapper">
+    <resultMap id="cartMap" type="school.thoughtworks.pos.bean.Cart">
+        <id property="id" column="id"/>
+        <result column="userId" property="userId"/>
+        <collection property="items" column="id" javaType="ArrayList" ofType="school.thoughtworks.pos.bean.Item" select="getItemsByCartId"/>
+    </resultMap>
+
+    <resultMap id="itemMap" type="school.thoughtworks.pos.bean.Item">
+        <id property="id" column="id"></id>
+        <result column="name" property="name"></result>
+        <result column="price" property="price"></result>
+        <result column="categoryId" property="categoryId"></result>
+    </resultMap>
+
+    <select id="getItemsByCartId" resultMap="itemMap">
+       select * from item left join itemCart on item.id = itemCart.itemId where cartId = #{id};
+    </select>
+
+    <select id="findAll" resultMap="cartMap">
+        SELECT * FROM cart;
+    </select>
+
+    <insert id="insertCart" parameterType="school.thoughtworks.pos.bean.Cart" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cart VALUES (null,#{userId});
+    </insert>
+
+    <insert id="insertItemCart" parameterType="java.lang.Integer" >
+        INSERT INTO itemCart VALUES (#{itemId},#{cartId});
+    </insert>
+
+    <delete id="deleteCartById" parameterType="java.lang.Integer">
+        DELETE  FROM cart WHERE id =#{id};
+    </delete>
+
+    <update id="updateCart" parameterType="school.thoughtworks.pos.bean.Cart">
+        UPDATE cart set userId=#{userId} where id=#{id};
+    </update>
+
+    <select id="getCartById" parameterType="java.lang.Integer" resultMap="cartMap">
+        SELECT * from cart where id = #{id};
+    </select>
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="school.thoughtworks.pos.mapper.CategoryMapper">
+    <resultMap id="categoryMap" type="school.thoughtworks.pos.bean.Category">
+        <id property="id" column="id"/>
+        <result column="name" property="name"/>
+        <collection property="items" column="id" javaType="ArrayList" ofType="school.thoughtworks.pos.bean.Item" select="getItemsByCategoryId"/>
+    </resultMap>
+
+    <resultMap id="itemMap" type="school.thoughtworks.pos.bean.Item">
+        <id property="id" column="id"></id>
+        <result column="name" property="name"></result>
+        <result column="price" property="price"></result>
+        <result column="categoryId" property="categoryId"></result>
+    </resultMap>
+
+    <select id="getItemsByCategoryId" resultMap="itemMap">
+        select * from item where categoryId= #{id};
+    </select>
+
+    <select id="findAll" resultMap="categoryMap">
+        SELECT * FROM category;
+    </select>
+
+    <insert id="insertCategory" parameterType="school.thoughtworks.pos.bean.Category" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO category VALUES (null,#{name});
+    </insert>
+
+    <delete id="deleteCategoryById" parameterType="java.lang.Integer">
+        DELETE  FROM category WHERE id =#{id};
+    </delete>
+
+    <update id="updateCategory" parameterType="school.thoughtworks.pos.bean.Category">
+        UPDATE category set name=#{name} where id=#{id};
+    </update>
+
+    <select id="getCategoryById" parameterType="java.lang.Integer" resultMap="categoryMap">
+        SELECT * from category where id = #{id};
+    </select>
+
+</mapper>
